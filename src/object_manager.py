@@ -17,7 +17,7 @@ class ObjectManager:
         # self.object_max_bbbox # A list of each object's maximum Bbox through the video.
         # self.object_metadata  # The starting and ending frame of the object in the video.
       
-        def __init__(self, max_obj=255):
+        def __init__(self, max_obj=1255):
                 self.max_obj = max_obj
                 self.objects = [[] for _ in range(self.max_obj)]
                 self.object_max_bbox = [[] for _ in range(self.max_obj)]
@@ -60,16 +60,16 @@ class ObjectManager:
                         obj_frames = self.objects[obj_idx]
                         for i in range(0, len(obj_frames)):
                                 obj_mask = obj_frames[i].getMask()
-                                _, obj_mask = cv2.threshold(obj_mask, 100, 255, cv2.THRESH_BINARY)
+                                #_, obj_mask = cv2.threshold(obj_mask, 100, 255, cv2.THRESH_BINARY)
                                 obj_image = obj_frames[i].getImage()
-                                obj_image = cv2.bitwise_and(obj_image, obj_image, mask=obj_mask)
+                                #obj_image = cv2.bitwise_and(obj_image, obj_image, mask=obj_mask)
                                 #back = cv2.randn(np.zeros_like(obj_image), (0), (0))
-                                back = np.full_like(obj_image,125)
-                                back = cv2.bitwise_and(back, back, mask=cv2.bitwise_not(obj_mask))
-                                obj_image = cv2.add(obj_image, back)
+                                #back = np.full_like(obj_image,125)
+                                #back = cv2.bitwise_and(back, back, mask=cv2.bitwise_not(obj_mask))
+                                #obj_image = cv2.add(obj_image, back)
                                 images.append(obj_image)
                         if len(obj_frames) > 0:
-                                video.write_video(output_dir + str(obj_idx) + '.mp4', images)
+                                video.write_video(output_dir + str(obj_idx) + '.avi', images)
             
                 
                 

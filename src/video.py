@@ -14,11 +14,12 @@ def load_video(argument_filename):
     return video, frame_count, frame_heigth, frame_width
 
 def write_video(filename, v):
-    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
+    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
     isColor = False
     if len(v[0].shape) == 3:
         isColor = v[0].shape[2] == 3
     out = cv2.VideoWriter(filename, fourcc, 20.0, (v[0].shape[1],v[0].shape[0]), isColor)
+    #out = cv2.VideoWriter(filename, 0, 30, (v[0].shape[1],v[0].shape[0]), isColor)
     for f in range(0, len(v)):
         out.write(v[f])
     out.release()

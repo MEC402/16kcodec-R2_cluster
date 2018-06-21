@@ -20,6 +20,7 @@ class Tracker:
                 self.last_object_id = 0
                 self.frames = []
                 self.actual_frame_id = 0
+                self.key = "-1"
                 self.frames_background = []
 
 
@@ -27,10 +28,11 @@ class Tracker:
 
 
 
-        def fillFrames(self, n_frames):
+        def fillFrames(self, n_frames, keys):
                 for f in range(0,n_frames):
                         frame = Frame()
                         frame.setID(f)
+                        frame.setKey(keys[f])
                         self.appendFrame(frame)
 
 
@@ -72,6 +74,12 @@ class Tracker:
         
         def setActualFrameID(self, ID):
                 self.actual_frame_id = ID
+                
+        def getKey(self):
+                return self.key
+        
+        def seKey(self, k):
+                self.key = k
         
         def getFramesBackground(self):
                 return self.frames_background

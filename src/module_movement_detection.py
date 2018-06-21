@@ -9,9 +9,10 @@ import cv2
 import numpy as np
 import sys
 
-input_dir = "../videos/output/"
-output_dir = "../videos/output_diff/"
-
+#input_dir = "../videos/output/"
+#output_dir = "../videos/output_diff/"
+input_dir = "video_source/"
+output_dir = "differences/"
 
 
 
@@ -29,6 +30,7 @@ def detect_movement(frame0name, frame1name, mode="frame_differences", n=None, ba
     
     frame0 = cv2.imread(input_dir + frame0name)
     frame1 = cv2.imread(input_dir + frame1name)
+    
     
     if mode == "frame_differences":
         return __frame_difference(frame0, frame1)
@@ -56,7 +58,7 @@ def detect_movement(frame0name, frame1name, mode="frame_differences", n=None, ba
 def __frame_difference(frame0, frame1):
       
     if frame0 is None or frame1 is None:
-        raise ValueError("MovementDetection:__frame_difference(frame0,frame1,n) --> Error reading the frames!")
+        raise ValueError("MovementDetection:__frame_difference(frame0,frame1) --> Error reading the frames!")
       
     return cv2.absdiff(frame0, frame1)
            

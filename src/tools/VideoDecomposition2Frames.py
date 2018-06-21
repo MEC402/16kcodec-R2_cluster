@@ -6,19 +6,13 @@ Created on Wed Jan 24 13:02:03 2018
 """
 
 import cv2
-from tqdm import tqdm
 import os
 import video
+import sys
 
 
-input_video = input("Input the input video: ")
-dst_dir = input("Input the destination directory: ")
-
-print(" ")
-print("-----------")
-print("Input video -->  " + input_video)
-print("Destination directory  -->  " + dst_dir)
-print("-----------")
+input_video = sys.argv[1]
+dst_dir = sys.argv[2]
 
 if not os.path.exists(dst_dir) or not os.path.isdir(dst_dir):
       os.makedirs(dst_dir)
@@ -31,7 +25,7 @@ v, frame_count, frame_heigth, frame_width = video.load_video(input_video)
 
 #%% WRITE INDIVIDUAL FRAMES INTO DESTINATION FOLDER
 
-for f in tqdm(range(0, frame_count)):
-      cv2.imwrite(dst_dir + "/" + str(f).zfill(4) + ".bmp", v[f] )
+for f in range(0, frame_count):
+      cv2.imwrite(dst_dir + "/" + str(f) + ".png", v[f] )
       
 print("Decomposition finished!")

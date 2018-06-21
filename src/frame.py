@@ -12,9 +12,11 @@ class Frame:
 
         def __init__(self):
                 self.ID = -1
+                self.key = "-1"
                 self.objects = []
                 self.image = None
                 self.mask = None
+                
 
 
         # Appends an object to the objects list of the frame as a tracked object
@@ -34,6 +36,12 @@ class Frame:
         
         def setID(self, ID):
                 self.ID = ID
+                
+        def getKey(self):
+                return self.key
+        
+        def setKey(self, key):
+                self.key = key
                 
         def getObjects(self):
                 return self.objects

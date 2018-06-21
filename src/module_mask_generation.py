@@ -6,10 +6,12 @@ Created on Thu May 17 13:20:40 2018
 """
 
 import sys
+import os
 import cv2
 import numpy as np
 
 # General params
+input_dir = "differences/"
 output_dir = "masks/"
 
 # Candidate pixel classification params
@@ -55,16 +57,22 @@ def generate_masks(labels):
 
 if len(sys.argv) != 2:
     print(len(sys.argv))
-    print("Usage: python module_blob_generation.py filename0 filename1")
+    print("Usage: python module_mask_generation.py filename")
     raise Exception("BlobGeneration: main --> Input arguments != 2.") 
     
 filename = sys.argv[1]
-frame = cv2.imread(filename)
+frame = cv2.imread(input_dir + filename)
 
 blobs = generate_blobs(frame)
 cc = CCL(blobs)
 masks = generate_masks(cc)
 
+#report_name = 
+#report = None
+#if not os.path.isfile("masks.rpt"):
+#    report = open("masks.rpt", 'w')
+#else
+#    report = open("masks.rpt", 'a')
 tokens = filename.split('.')
 for m in range(0,len(masks)):
     output_filename = tokens[0] + "_m{}.".format(m) + tokens[1]
