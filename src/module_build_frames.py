@@ -12,7 +12,7 @@ import numpy as np
 
 target_h = 2160
 target_w = 4096
-target_shape = (target_h, target_w)
+target_shape = (target_h, target_w, 3)
 
 
 
