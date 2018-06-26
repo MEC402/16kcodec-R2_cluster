@@ -67,6 +67,7 @@ for frame in tracker.getFrames():
         objects[str(obj.getID())] = (curr_y, curr_x, h, w)  # Store obj's coords at the target frame
         target_frame[curr_y:curr_y+h, curr_x:curr_x+w] = v_obj_frame    # Add the object to the target frame
         
+        curr_x = curr_x + w
         
         
         
