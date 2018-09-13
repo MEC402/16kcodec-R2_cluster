@@ -14,7 +14,7 @@ def get_int(name):
       return(int(i))
 
 def PSNR(input_signal, noisy_signal):
-      max_in_signal = np.max(input_signal)
+      max_in_signal = np.max(input_signal)**2
       mse = np.mean(((input_signal - noisy_signal) * (input_signal - noisy_signal)))
       return 10* np.log(max_in_signal / mse)
 

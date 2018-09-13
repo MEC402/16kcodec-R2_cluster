@@ -11,8 +11,8 @@ import cv2
 import numpy as np
 
 # General params
-input_dir = "differences/"
-output_dir = "masks/"
+input_dir = "../tmp/differences/"
+output_dir = "../tmp/masks/"
 
 # Candidate pixel classification params
 epsilon = 20

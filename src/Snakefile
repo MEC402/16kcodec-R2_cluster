@@ -1,0 +1,66 @@
+import os
+
+FILE_IDS = list(range(int(os.environ.get("RANGE").split(",")[0]),int(os.environ.get("RANGE").split(",")[1])))
+SOURCE_FILENAMES = expand("anim_{i}_4k.png", i=FILE_IDS)
+DIFFERENCES_FILENAMES = expand("anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+
+def differencess_shell_run():
+    for i in range(len(SOURCE_FILENAMES)-1):
+        shell("python module_movement_detection.py {} {}".format(SOURCE_FILENAMES[i], SOURCE_FILENAMES[i+1]))
+
+def mask_generation_shell_run():
+    for i in range(len(DIFFERENCES_FILENAMES)):
+        shell("python module_mask_generation.py {}".format(DIFFERENCES_FILENAMES[i]))
+
+
+rule all:
+    input:
+        "../tmp/differences/output.mp4",
+        "../tmp/mask_foo.rpt",
+        "../tmp/masks/tracker.pkl"
+
+### DIFFERENCES ------------------------------------------------------
+rule differences:
+    input:
+        expand("../video_source/anim_{i}_4k.png", i=FILE_IDS)
+    output:
+        expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+    shell:
+        differencess_shell_run()
+
+rule get_video_differences:
+    input:
+        "../tmp/differences/",
+        expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+    output:
+        "../tmp/differences/output.mp4"
+    shell:
+        "python tools/VideoCompositionFromFrames.py {input}"
+
+
+### MASKS ------------------------------------------------------
+rule masks:
+    input:
+        expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+    output:
+        dynamic("../tmp/masks/anim_{i}_4k_diff_m{obj}.png")
+    shell:
+        mask_generation_shell_run()
+
+rule generate_masks:
+    input:
+        dynamic("../tmp/masks/anim_{i}_4k_diff_m{obj}.png")
+    output:
+        "../tmp/mask_foo.rpt"
+    shell:
+        "echo foo > ../tmp/mask_foo.rpt"
+
+
+### BBOXES ------------------------------------------------------
+rule generate_bboxes:
+    input:
+        "../tmp/masks/"
+    output:
+        "../tmp/masks/tracker.pkl"
+    shell:
+        "python module_find_bboxes.py {input}"

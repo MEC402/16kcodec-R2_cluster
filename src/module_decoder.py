@@ -71,7 +71,7 @@ for frame in tracker.getFrames():
         
         background_frame[y:y+h, x:x+w] = v_obj_frame
     print(frame.getID())
-    cv2.imwrite("reconstruction/" + str(frame.getID()) + ".png", background_frame)
+    cv2.imwrite("../output/reconstructed_frames/" + str(frame.getID()) + ".png", background_frame)
     #out0.write(background_frame[0:int(background.shape[1]/2), 0:int(background.shape[0]/2)])
     #out1.write(background_frame[0:int(background.shape[1]/2), int(background.shape[0]/2):background.shape[0]])
     #out2.write(background_frame[int(background.shape[1]/2):background.shape[1], 0:int(background.shape[0]/2)])
