@@ -54,6 +54,7 @@ for frame in tracker.getFrames():
         ret, v_obj_frame = loaded_videos[str(obj.getID())].read()
        
         if not ret:
+            print(obj.getID())
             continue
         h, w, _ = v_obj_frame.shape
         if curr_y + h > target_h and curr_x + w > target_w: # No more room, report to the user
@@ -66,17 +67,21 @@ for frame in tracker.getFrames():
         
         objects[str(obj.getID())] = (curr_y, curr_x, h, w)  # Store obj's coords at the target frame
         target_frame[curr_y:curr_y+h, curr_x:curr_x+w] = v_obj_frame    # Add the object to the target frame
-        
+        print(curr_y, curr_y+h, curr_x, curr_x+w, target_h, target_w)
         curr_x = curr_x + w
         
         
         
-    print(frame.getID())
-    cv2.imwrite("frame_builder/" + str(frame.getID()) + ".png", target_frame)
+    print("Frame " + str(frame.getID()))
+    cv2.imwrite("../tmp/frame_builder/" + str(frame.getID()) + ".png", target_frame)
     
-    f = open("frame_builder/" + str(frame.getID()) + ".pkl", 'wb')
+    f = open("../tmp/frame_builder/" + str(frame.getID()) + ".pkl", 'wb')
     pickle.dump(objects, f)
     f.close()
+    
+    curr_x = 0
+    curr_y = 0
+    max_y = 0
     
 
         

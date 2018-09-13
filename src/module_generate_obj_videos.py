@@ -28,7 +28,7 @@ file = open(tracker_path, 'rb')
 tracker = pickle.load(file)
 file.close()
 
-"""
+
 # Add all the objects to the object manager
 obj_manager = ObjectManager()
 for f in range(0, len(tracker.getFrames())):
@@ -54,11 +54,11 @@ for f in range(0, len(tracker.getFrames())):
             if y + video_bbox_h >= frame_heigth:
                   y = y - (y + video_bbox_h - frame_heigth)
             #obj.setImage(image[y:(y+video_bbox_h), x:(x+video_bbox_w)])
-            cv2.imwrite("output/object_frames/" + str(f) + "_" + str(obj.getID()) + ".png", image[y:(y+video_bbox_h), x:(x+video_bbox_w)])
+            cv2.imwrite("../tmp/object_frames/" + str(f) + "_" + str(obj.getID()) + ".png", image[y:(y+video_bbox_h), x:(x+video_bbox_w)])
             #obj.setMask(frame.getMask()[y:(y+video_bbox_h), x:(x+video_bbox_w)])
       
       obj_manager.add_frame(frame.getObjects(),f)
-"""
+
       
 #obj_manager.write_individual_videos("output/objects/")
 fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
@@ -66,12 +66,12 @@ for obj_id in range(0, 1200):
     out = None
     print(obj_id)
     for f in range(0, len(tracker.getFrames())): 
-        print("output/object_frames/" + str(f) + "_" + str(obj_id) + ".png")
-        frame = cv2.imread("output/object_frames/" + str(f) + "_" + str(obj_id) + ".png")
+        print("../tmp/object_frames/" + str(f) + "_" + str(obj_id) + ".png")
+        frame = cv2.imread("../tmp/object_frames/" + str(f) + "_" + str(obj_id) + ".png")
         if frame is None:
             continue
         if out is None:
-            out = cv2.VideoWriter("output/objects/" + str(obj_id) + ".avi", fourcc, 20.0, (frame.shape[1],frame.shape[0]), True)
+            out = cv2.VideoWriter("../output/object_videos/" + str(obj_id) + ".avi", fourcc, 20.0, (frame.shape[1],frame.shape[0]), True)
         out.write(frame)
     if not out is None:
         out.release()

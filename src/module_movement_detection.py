@@ -11,8 +11,8 @@ import sys
 
 #input_dir = "../videos/output/"
 #output_dir = "../videos/output_diff/"
-input_dir = "video_source/"
-output_dir = "differences/"
+input_dir = "../video_source/"
+output_dir = "../tmp/differences/"
 
 
 
