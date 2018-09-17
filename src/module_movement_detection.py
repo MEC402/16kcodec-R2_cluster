@@ -11,8 +11,8 @@ import sys
 
 #input_dir = "../videos/output/"
 #output_dir = "../videos/output_diff/"
-input_dir = "../video_source/"
-output_dir = "../tmp/differences/"
+input_dir = "/scratch/ilopez/16k_video_source/"
+output_dir = "/scratch/ilopez/16k_tmp/differences/"
 
 
 
@@ -30,7 +30,6 @@ def detect_movement(frame0name, frame1name, mode="frame_differences", n=None, ba
     
     frame0 = cv2.imread(input_dir + frame0name)
     frame1 = cv2.imread(input_dir + frame1name)
-    
     
     if mode == "frame_differences":
         return __frame_difference(frame0, frame1)

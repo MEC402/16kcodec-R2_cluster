@@ -1,8 +1,15 @@
 import os
 
 FILE_IDS = list(range(int(os.environ.get("RANGE").split(",")[0]),int(os.environ.get("RANGE").split(",")[1])))
+SOURCE_DIR =  os.environ.get("SRC_DIR")
+OUTPUT_DIR = os.environ.get("OUT_DIR")
+TMP_DIR = os.environ.get("TMP_DIR")
 SOURCE_FILENAMES = expand("anim_{i}_4k.png", i=FILE_IDS)
 DIFFERENCES_FILENAMES = expand("anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+
+print("Source dir: " + SOURCE_DIR)
+print("Temporal dir: " + TMP_DIR)
+print("Output dir: " + OUTPUT_DIR)
 
 def differencess_shell_run():
     for i in range(len(SOURCE_FILENAMES)-1):
@@ -15,19 +22,25 @@ def mask_generation_shell_run():
 
 rule all:
     input:
-        "../tmp/differences/output.mp4",
-        "../tmp/mask_foo.rpt",
-        "../tmp/masks/tracker.pkl"
+        #"../tmp/differences/output.mp4",
+        #"../tmp/mask_foo.rpt",
+        #"../tmp/masks/tracker.pkl"
+        expand("{tmp}mask_foo.rpt", tmp=TMP_DIR),
+        expand("{tmp}masks/tracker.pkl", tmp=TMP_DIR)
+        #expand("{tmp}differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1], tmp=TMP_DIR)
 
 ### DIFFERENCES ------------------------------------------------------
 rule differences:
     input:
-        expand("../video_source/anim_{i}_4k.png", i=FILE_IDS)
+        #expand("/scratch/ilopez/16k_video_source/anim_{i}_4k.png", i=FILE_IDS)
+        expand("{src}anim_{i}_4k.png", i=FILE_IDS, src=SOURCE_DIR)
     output:
-        expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+        #expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+        expand("{tmp}differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1], tmp=TMP_DIR)
     shell:
         differencess_shell_run()
 
+"""
 rule get_video_differences:
     input:
         "../tmp/differences/",
@@ -36,31 +49,38 @@ rule get_video_differences:
         "../tmp/differences/output.mp4"
     shell:
         "python tools/VideoCompositionFromFrames.py {input}"
-
+"""
 
 ### MASKS ------------------------------------------------------
 rule masks:
     input:
-        expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+        #expand("../tmp/differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+        expand("{tmp}differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1], tmp=TMP_DIR)
     output:
-        dynamic("../tmp/masks/anim_{i}_4k_diff_m{obj}.png")
+        #dynamic("../tmp/masks/anim_{i}_4k_diff_m{obj}.png")
+        dynamic(expand("{tmp}masks/anim_{i}_4k_diff_m{obj}.png", tmp=TMP_DIR, i="{i}", obj="{obj}"))
     shell:
         mask_generation_shell_run()
 
 rule generate_masks:
     input:
-        dynamic("../tmp/masks/anim_{i}_4k_diff_m{obj}.png")
+        #dynamic("../tmp/masks/anim_{i}_4k_diff_m{obj}.png")
+        dynamic(expand("{tmp}masks/anim_{i}_4k_diff_m{obj}.png", tmp=TMP_DIR, i="{i}", obj="{obj}"))
+        	
     output:
-        "../tmp/mask_foo.rpt"
+        #"../tmp/mask_foo.rpt"
+        expand("{tmp}mask_foo.rpt", tmp=TMP_DIR)
     shell:
-        "echo foo > ../tmp/mask_foo.rpt"
+        "echo foo > {}mask_foo.rpt".format(TMP_DIR)
 
 
 ### BBOXES ------------------------------------------------------
 rule generate_bboxes:
     input:
-        "../tmp/masks/"
+        #"../tmp/masks/"
+        expand("{tmp}mask_foo.rpt", tmp=TMP_DIR)
     output:
-        "../tmp/masks/tracker.pkl"
+        #"../tmp/masks/tracker.pkl"
+        expand("{tmp}masks/tracker.pkl", tmp=TMP_DIR)
     shell:
-        "python module_find_bboxes.py {input}"
+        "python module_find_bboxes.py {}masks/".format(TMP_DIR)

@@ -11,8 +11,8 @@ import cv2
 import numpy as np
 
 # General params
-input_dir = "../tmp/differences/"
-output_dir = "../tmp/masks/"
+input_dir = "/scratch/ilopez/16k_tmp/differences/"
+output_dir = "/scratch/ilopez/16k_tmp/masks/"
 
 # Candidate pixel classification params
 epsilon = 20
