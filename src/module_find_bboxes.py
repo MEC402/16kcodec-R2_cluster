@@ -67,6 +67,7 @@ if len(sys.argv) != 2:
     raise Exception("FindBboxes: main --> Input arguments != 2.") 
     
 dir_path = sys.argv[1]
+tmp_dir = dir_path[:-6] # Get the temporal dir from the dir_path
 
 
 filenames = [f for f in listdir(dir_path) if isfile(join(dir_path, f))]
@@ -122,6 +123,6 @@ for f in range(0, len(tracker.getFrames())):
         
         
 # Write the tracker object
-file = open(dir_path + "tracker.pkl", 'wb')
+file = open(tmp_dir + "tracker.pkl", 'wb')
 pickle.dump(tracker, file)
 file.close()

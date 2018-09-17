@@ -26,7 +26,8 @@ rule all:
         #"../tmp/mask_foo.rpt",
         #"../tmp/masks/tracker.pkl"
         expand("{tmp}mask_foo.rpt", tmp=TMP_DIR),
-        expand("{tmp}masks/tracker.pkl", tmp=TMP_DIR)
+        expand("{tmp}tracker.pkl", tmp=TMP_DIR),
+        expand("{tmp}objects_foo.rpt", tmp=TMP_DIR)
         #expand("{tmp}differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1], tmp=TMP_DIR)
 
 ### DIFFERENCES ------------------------------------------------------
@@ -81,6 +82,24 @@ rule generate_bboxes:
         expand("{tmp}mask_foo.rpt", tmp=TMP_DIR)
     output:
         #"../tmp/masks/tracker.pkl"
-        expand("{tmp}masks/tracker.pkl", tmp=TMP_DIR)
+        expand("{tmp}tracker.pkl", tmp=TMP_DIR)
     shell:
         "python module_find_bboxes.py {}masks/".format(TMP_DIR)
+
+### GENERATE VIDEO OBJECTS --------------------------------------
+rule objects:
+    input:
+        SOURCE_DIR,
+        "{}tracker.pkl".format(TMP_DIR)
+    output:
+        dynamic(expand("{out}objects/{id}.avi", out=OUTPUT_DIR, id="{id}"))
+    shell:
+        "python module_generate_obj_videos.py {} {}tracker.pkl {}".format(SOURCE_DIR, TMP_DIR, OUTPUT_DIR) 
+
+rule generate_video_objects:
+    input:
+        dynamic(expand("{out}objects/{id}.avi", out=OUTPUT_DIR, id="{id}"))
+    output:
+        "{}objects_foo.rpt".format(TMP_DIR)
+    shell:
+        "echo foo > {}objects_foo.rpt".format(TMP_DIR)
