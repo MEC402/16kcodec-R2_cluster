@@ -44,9 +44,7 @@ obj_manager.compute_obj_max_bboxes()
 max_bboxes = obj_manager.getMaxBboxObjects()
 fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 for f in range(0, len(tracker.getFrames())):
-      print(f)
       frame = tracker.getFrame(f)
-      print(src_dir_path)
       image = cv2.imread(src_dir_path + "anim_{id}_4k.png".format(id=frame.getKey()))
       frame_heigth, frame_width, _ = image.shape
       for obj in frame.getObjects():
@@ -67,9 +65,7 @@ for f in range(0, len(tracker.getFrames())):
 fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 for obj_id in range(0, 1200):
     out = None
-    print(obj_id)
     for f in range(0, len(tracker.getFrames())): 
-        print(tmp_dir + "object_frames/" + str(f) + "_" + str(obj_id) + ".png")
         frame = cv2.imread(tmp_dir + "object_frames/" + str(f) + "_" + str(obj_id) + ".png")
         if frame is None:
             continue

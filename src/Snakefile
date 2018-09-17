@@ -25,9 +25,10 @@ rule all:
         #"../tmp/differences/output.mp4",
         #"../tmp/mask_foo.rpt",
         #"../tmp/masks/tracker.pkl"
-        expand("{tmp}mask_foo.rpt", tmp=TMP_DIR),
-        expand("{tmp}tracker.pkl", tmp=TMP_DIR),
-        expand("{tmp}objects_foo.rpt", tmp=TMP_DIR)
+        #expand("{tmp}mask_foo.rpt", tmp=TMP_DIR),
+        #expand("{tmp}tracker.pkl", tmp=TMP_DIR),
+        #expand("{tmp}objects_foo.rpt", tmp=TMP_DIR),
+        "{}output.16kc".format(OUTPUT_DIR)
         #expand("{tmp}differences/anim_{i}_4k_diff.png", i=FILE_IDS[:-1], tmp=TMP_DIR)
 
 ### DIFFERENCES ------------------------------------------------------
@@ -103,3 +104,16 @@ rule generate_video_objects:
         "{}objects_foo.rpt".format(TMP_DIR)
     shell:
         "echo foo > {}objects_foo.rpt".format(TMP_DIR)
+
+
+### GENERATE STREAMS
+rule streams:
+	input:
+		"{}tracker.pkl".format(TMP_DIR),
+		"{}objects/".format(OUTPUT_DIR),
+		"{}background.png".format(OUTPUT_DIR),
+		"{}objects_foo.rpt".format(TMP_DIR)
+	output:
+		"{}output.16kc".format(OUTPUT_DIR)
+	shell:
+		"python module_build_streams.py {}tracker.pkl {}objects/".format(TMP_DIR, OUTPUT_DIR)

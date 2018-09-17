@@ -28,6 +28,7 @@ if len(sys.argv) != 3:
     
 tracker_path = sys.argv[1]
 obj_video_dir = sys.argv[2]
+output_dir = obj_video_dir[:-8]
 
 f = open(tracker_path, 'rb')
 tracker = pickle.load(f)
@@ -39,12 +40,12 @@ loaded_videos = {}
 
 n_frames = len(tracker.getFrames())
 
-binary = open('../output/output.16kc', 'wb')
+binary = open(output_dir + "output.16kc", 'wb')
 
 output_size += binary.write(target_w.to_bytes(2, byteorder='big'))
 output_size += binary.write(target_h.to_bytes(2, byteorder='big'))
 
-target_back = cv2.imread("../output/background.png")
+target_back = cv2.imread(output_dir + "background.png")
 _, target_back = cv2.imencode('.png', target_back)
 target_back = target_back.tobytes()
 
@@ -58,7 +59,6 @@ for frame in tracker.getFrames():
     n_objects = len(frame.getObjects())
     output_size += binary.write(n_objects.to_bytes(2, byteorder='big'))
     for obj in frame.getObjects():
-        print(frame.getID(), obj.getID())
         if not str(obj.getID()) in loaded_videos:
             obj_cap = cv2.VideoCapture(obj_video_dir + str(obj.getID()) + ".avi")
             loaded_videos[str(obj.getID())] = obj_cap
