@@ -6,6 +6,8 @@ OUTPUT_DIR = os.environ.get("OUT_DIR")
 TMP_DIR = os.environ.get("TMP_DIR")
 SOURCE_FILENAMES = expand("anim_{i}_4k.png", i=FILE_IDS)
 DIFFERENCES_FILENAMES = expand("anim_{i}_4k_diff.png", i=FILE_IDS[:-1])
+TGT_WIDTH = int(os.environ.get("TGT_WIDTH"))
+TGT_HEIGHT = int(os.environ.get("TGT_HEIGHT"))
 
 print("Source dir: " + SOURCE_DIR)
 print("Temporal dir: " + TMP_DIR)
@@ -104,6 +106,15 @@ rule generate_video_objects:
         "{}objects_foo.rpt".format(TMP_DIR)
     shell:
         "echo foo > {}objects_foo.rpt".format(TMP_DIR)
+
+### GENERATE BACKGROUND
+rule generate_background:
+	input:
+		"{}tracker.pkl".format(TMP_DIR)
+	output:
+		"{}background.png".format(OUTPUT_DIR)
+	shell:
+		"python module_generate_background.py {}tracker.pkl {} {} {} {}".format(TMP_DIR, SOURCE_DIR, OUTPUT_DIR, TGT_WIDTH, TGT_HEIGHT)
 
 
 ### GENERATE STREAMS
