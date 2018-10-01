@@ -12,17 +12,19 @@ import video
 import sys
 import pickle
 import gc
+import os
+from os import listdir
+from os.path import isdir, isfile, join
 
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 3:
     print(len(sys.argv))
-    print("Usage: python module_generate_obj_videos.py src_dir_path trackerpath output_dir_path")
-    raise Exception("GenerateObjVideos: main --> Input arguments != 4.") 
+    print("Usage: python module_generate_obj_videos.py src_dir_path trackerpath")
+    raise Exception("GenerateObjVideos: main --> Input arguments != 3.") 
     
     
 src_dir_path = sys.argv[1]
 tracker_path = sys.argv[2]
-output_dir = sys.argv[3]
 tmp_dir = tracker_path[:-11] # remove the file from tracker_path to get the tmp dir
 
 # Load the tracker
@@ -54,32 +56,24 @@ for f in range(0, len(tracker.getFrames())):
                   x = x - (x + video_bbox_w - frame_width)
             if y + video_bbox_h >= frame_heigth:
                   y = y - (y + video_bbox_h - frame_heigth)
-            #obj.setImage(image[y:(y+video_bbox_h), x:(x+video_bbox_w)])
-            cv2.imwrite(tmp_dir + "object_frames/" + str(f) + "_" + str(obj.getID()) + ".png", image[y:(y+video_bbox_h), x:(x+video_bbox_w)])
-            #obj.setMask(frame.getMask()[y:(y+video_bbox_h), x:(x+video_bbox_w)])
+            obj_dir = "{}object_frames/{}/".format(tmp_dir, obj.getID())
+            if not os.path.isdir(obj_dir):
+                  os.mkdir(obj_dir)
+            cv2.imwrite(obj_dir + str(f).zfill(6) + ".png", image[y:(y+video_bbox_h), x:(x+video_bbox_w)])
       
       obj_manager.add_frame(frame.getObjects(),f)
+        
 
-      
-#obj_manager.write_individual_videos("output/objects/")
-fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-for obj_id in range(0, 1200):
-    out = None
-    for f in range(0, len(tracker.getFrames())): 
-        frame = cv2.imread(tmp_dir + "object_frames/" + str(f) + "_" + str(obj_id) + ".png")
-        if frame is None:
-            continue
-        if out is None:
-            out = cv2.VideoWriter(output_dir + "objects/" + str(obj_id) + ".avi", fourcc, 20.0, (frame.shape[1],frame.shape[0]), True)
-        out.write(frame)
-    if not out is None:
-        out.release()
-        
-        
-        
-        
-        
-        
+# Check that the resulting filenames for objects start at 000000.png (for FFMPEG library)
+obj_dir = "{}object_frames/".format(tmp_dir)
+directories = [f for f in listdir(obj_dir) if isdir(join(obj_dir, f))]
+for d in directories:
+    filenames = [f for f in listdir(obj_dir + d) if isfile(join(obj_dir + d, f))]
+    init_frame = int(filenames[0].split('.')[0])
+    for f in filenames:
+        curr_frame = int(f.split('.')[0])
+        curr_frame = curr_frame - init_frame
+        os.rename(obj_dir + d + "/" + f, obj_dir + d + "/" + str(curr_frame).zfill(6) + ".png")    
         
         
         

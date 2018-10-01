@@ -90,14 +90,14 @@ rule generate_bboxes:
         "python module_find_bboxes.py {}masks/".format(TMP_DIR)
 
 ### GENERATE VIDEO OBJECTS --------------------------------------
-rule objects:
+rule generate_object_frames:
     input:
         SOURCE_DIR,
         "{}tracker.pkl".format(TMP_DIR)
     output:
-        dynamic(expand("{out}objects/{id}.avi", out=OUTPUT_DIR, id="{id}"))
+        dynamic(expand("{tmp}object_frames/{id}/{f}.png", out=TMP_DIR, id="{id}", f="{f}"))
     shell:
-        "python module_generate_obj_videos.py {} {}tracker.pkl {}".format(SOURCE_DIR, TMP_DIR, OUTPUT_DIR) 
+        "python module_generate_obj_videos.py {} {}tracker.pkl".format(SOURCE_DIR, TMP_DIR) 
 
 rule generate_video_objects:
     input:
@@ -107,7 +107,7 @@ rule generate_video_objects:
     shell:
         "echo foo > {}objects_foo.rpt".format(TMP_DIR)
 
-### GENERATE BACKGROUND
+### GENERATE BACKGROUND  --------------------------------------
 rule generate_background:
 	input:
 		"{}tracker.pkl".format(TMP_DIR)
@@ -117,7 +117,7 @@ rule generate_background:
 		"python module_generate_background.py {}tracker.pkl {} {} {} {}".format(TMP_DIR, SOURCE_DIR, OUTPUT_DIR, TGT_WIDTH, TGT_HEIGHT)
 
 
-### GENERATE STREAMS
+### GENERATE STREAMS  --------------------------------------
 rule streams:
 	input:
 		"{}tracker.pkl".format(TMP_DIR),
