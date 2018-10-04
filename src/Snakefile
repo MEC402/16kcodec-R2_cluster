@@ -99,9 +99,18 @@ rule generate_object_frames:
     shell:
         "python module_generate_obj_videos.py {} {}tracker.pkl".format(SOURCE_DIR, TMP_DIR) 
 
+rule generate_object_videos_bitrate:
+	input:
+		dynamic(expand("{tmp}object_frames/{id}/{f}.png", out=TMP_DIR, id="{id}", f="{f}"))
+	output:
+		dynamic(expand("{out}objects/{id}_{bitrate}.mp4", out=OUTPUT_DIR, id="{id}", bitrate="{bitrate}")),
+		"{}quality_scores.csv".format(OUTPUT_DIR)
+	shell:
+		"python module_generate_obj_videos_bitrate {}object_frames/ {}/objects/".format(TMP_DIR, OUTPUT_DIR)
+
 rule generate_video_objects:
     input:
-        dynamic(expand("{out}objects/{id}.avi", out=OUTPUT_DIR, id="{id}"))
+        dynamic(expand("{out}objects/{id}_{bitrate}.avi", out=OUTPUT_DIR, id="{id}", bitrate="{bitrate}"))
     output:
         "{}objects_foo.rpt".format(TMP_DIR)
     shell:
@@ -121,7 +130,7 @@ rule generate_background:
 rule streams:
 	input:
 		"{}tracker.pkl".format(TMP_DIR),
-		"{}objects/".format(OUTPUT_DIR),
+		dynamic(expand("{out}objects/{id}_{bitrate}.avi", out=OUTPUT_DIR, id="{id}", bitrate="{bitrate}"))
 		"{}background.png".format(OUTPUT_DIR),
 		"{}objects_foo.rpt".format(TMP_DIR)
 	output:
